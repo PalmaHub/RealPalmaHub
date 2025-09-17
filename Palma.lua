@@ -52,8 +52,8 @@ screenGui.ResetOnSpawn = false
 -- Основной фрейм
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 450) -- Увеличил высоту для новой кнопки
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -225)
+mainFrame.Size = UDim2.new(0, 300, 0, 500) -- Увеличил высоту для новой кнопки
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
 mainFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
@@ -129,7 +129,8 @@ local button3 = createButton("FloatButton", "float", UDim2.new(0, 0, 0, 100))
 local button4 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0, 150))
 local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200))
 local button6 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 250))
-local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300)) -- Новая кнопка GodMode
+local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300))
+local button8 = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 350)) -- Новая кнопка Kick
 
 -- Функционал перетаскивания
 local dragging = false
@@ -657,7 +658,7 @@ local function toggleBrainrotEsp(forceState)
                 -- Устанавливаем полупрозрачность
                 obj.Transparency = 0.7
                 
-                -- Сохраняем объект для последующего восстановления
+                -- Сохраняем объект для последуючного восстановления
                 table.insert(brainrotEspObjects, obj)
             end
         end
@@ -699,6 +700,26 @@ local function toggleBrainrotEsp(forceState)
     end
 end
 
+-- Функционал кнопки Kick
+local function kickPlayer()
+    button8.Text = "KICKING..."
+    button8.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    
+    -- Создаем сообщение о кике
+    local kickMessage = Instance.new("Message")
+    kickMessage.Text = "YOU PRESS BUTTON KICK"
+    kickMessage.Parent = workspace
+    
+    -- Ждем немного, чтобы игрок увидел сообщение
+    wait(2)
+    
+    -- Кикаем игрока из игры
+    player:Kick("YOU PRESS BUTTON KICK")
+    
+    -- Удаляем сообщение (на случай если кик не сработает сразу)
+    kickMessage:Destroy()
+end
+
 -- Функционал кнопок
 button1.MouseButton1Click:Connect(function()
     toggleBrainrotEsp()
@@ -730,6 +751,10 @@ button7.MouseButton1Click:Connect(function()
     toggleGodMode()
 end)
 
+button8.MouseButton1Click:Connect(function()
+    kickPlayer()
+end)
+
 -- Добавляем основной фрейм на экран
 mainFrame.Parent = screenGui
 toggleButton.Parent = screenGui
@@ -747,7 +772,7 @@ local function toggleInterface()
         mainFrame.Size = UDim2.new(0, 0, 0, 0)
         
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 450)})
+        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 500)})
         tween:Play()
     end
 end
