@@ -2,9 +2,24 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
 
 local player = Players.LocalPlayer
 local mouse = player:GetMouse()
+
+-- Создание текста версии в правом углу
+local versionText = Instance.new("TextLabel")
+versionText.Name = "VersionText"
+versionText.Size = UDim2.new(0, 200, 0, 20)
+versionText.Position = UDim2.new(1, -210, 1, -30)
+versionText.AnchorPoint = Vector2.new(0, 1)
+versionText.BackgroundTransparency = 1
+versionText.Text = "TikTok @palmastealscript V 1.1"
+versionText.TextColor3 = Color3.new(1, 1, 1)
+versionText.Font = Enum.Font.Code
+versionText.TextSize = 14
+versionText.TextXAlignment = Enum.TextXAlignment.Right
 
 -- Создание кнопки открытия/закрытия
 local toggleButton = Instance.new("TextButton")
@@ -37,21 +52,21 @@ screenGui.ResetOnSpawn = false
 -- Основной фрейм
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 350) -- Увеличил высоту для новой кнопки
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -175)
-mainFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144) -- Светло-зеленый
+mainFrame.Size = UDim2.new(0, 300, 0, 450) -- Увеличил высоту для новой кнопки
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -225)
+mainFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
-mainFrame.Visible = false -- Сначала скрыт
+mainFrame.Visible = false
 
 -- Создание скругленных углов
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 12)
 corner.Parent = mainFrame
 
--- Обводка (изменено на черную)
+-- Обводка
 local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(0, 0, 0) -- Черная обводка
+stroke.Color = Color3.fromRGB(0, 0, 0)
 stroke.Thickness = 2
 stroke.Parent = mainFrame
 
@@ -70,7 +85,6 @@ title.BorderSizePixel = 0
 local titleCorner = Instance.new("UICorner")
 titleCorner.CornerRadius = UDim.new(0, 12)
 titleCorner.Parent = title
-
 title.Parent = mainFrame
 
 -- Контейнер для кнопок
@@ -109,11 +123,13 @@ local function createButton(name, text, position)
 end
 
 -- Создание кнопок
-local button1 = createButton("FloorStealButton", "3 floor steal", UDim2.new(0, 0, 0, 0))
+local button1 = createButton("BrainrotEspButton", "BrainrotEsp", UDim2.new(0, 0, 0, 0))
 local button2 = createButton("ESPButton", "esp", UDim2.new(0, 0, 0, 50))
 local button3 = createButton("FloatButton", "float", UDim2.new(0, 0, 0, 100))
 local button4 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0, 150))
-local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200)) -- Новая кнопка SkyWalk
+local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200))
+local button6 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 250))
+local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300)) -- Новая кнопка GodMode
 
 -- Функционал перетаскивания
 local dragging = false
@@ -150,9 +166,96 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- Переменные для бесконечного полета
-local isFlying = false
-local flightConnection = nil
+-- Функционал GodMode (бессмертие)
+local godModeEnabled = false
+local godModeConnections = {}
+
+local function toggleGodMode()
+    godModeEnabled = not godModeEnabled
+    
+    if godModeEnabled then
+        button7.Text = "GODMODE: ON"
+        button7.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        
+        -- Защита от смерти
+        if player.Character then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                -- Сохраняем оригинальное здоровье
+                humanoid.MaxHealth = math.huge
+                humanoid.Health = math.huge
+                
+                -- Защита от получения урона
+                local connection = humanoid.HealthChanged:Connect(function()
+                    if humanoid.Health < math.huge then
+                        humanoid.Health = math.huge
+                    end
+                end)
+                
+                table.insert(godModeConnections, connection)
+                
+                -- Защита от смерти
+                local diedConnection = humanoid.Died:Connect(function()
+                    if godModeEnabled then
+                        -- Предотвращаем смерть
+                        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+                        humanoid.Health = math.huge
+                    end
+                end)
+                
+                table.insert(godModeConnections, diedConnection)
+            end
+        end
+        
+        -- Обработка нового персонажа
+        local characterAddedConnection = player.CharacterAdded:Connect(function(character)
+            wait(0.5) -- Ждем загрузки персонажа
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.MaxHealth = math.huge
+                humanoid.Health = math.huge
+                
+                local connection = humanoid.HealthChanged:Connect(function()
+                    if humanoid.Health < math.huge then
+                        humanoid.Health = math.huge
+                    end
+                end)
+                
+                table.insert(godModeConnections, connection)
+                
+                local diedConnection = humanoid.Died:Connect(function()
+                    if godModeEnabled then
+                        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+                        humanoid.Health = math.huge
+                    end
+                end)
+                
+                table.insert(godModeConnections, diedConnection)
+            end
+        end)
+        
+        table.insert(godModeConnections, characterAddedConnection)
+        
+    else
+        button7.Text = "GodMode"
+        button7.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        
+        -- Отключаем все соединения GodMode
+        for _, connection in ipairs(godModeConnections) do
+            connection:Disconnect()
+        end
+        godModeConnections = {}
+        
+        -- Восстанавливаем нормальное здоровье
+        if player.Character then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.MaxHealth = 100
+                humanoid.Health = 100
+            end
+        end
+    end
+end
 
 -- Функционал плавания
 local isFloating = false
@@ -163,7 +266,6 @@ local function startFloating()
     if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
         local humanoidRootPart = player.Character.HumanoidRootPart
         
-        -- Останавливаем предыдущее плавание если было
         if floatConnection then
             floatConnection:Disconnect()
         end
@@ -176,7 +278,6 @@ local function startFloating()
         button3.Text = "FLOATING..."
         button3.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
         
-        -- Запускаем плавание
         floatConnection = RunService.Heartbeat:Connect(function()
             if not isFloating or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
                 if floatConnection then
@@ -185,18 +286,15 @@ local function startFloating()
                 return
             end
             
-            -- Получаем направление камеры
             local camera = workspace.CurrentCamera
             local cameraCFrame = camera.CFrame
             local direction = cameraCFrame.LookVector
             
-            -- Двигаем персонажа в направлении камеры с нормальной скоростью
-            humanoidRootPart.Velocity = direction * 25 -- Нормальная скорость плавания
+            humanoidRootPart.Velocity = direction * 25
         end)
         
-        -- Автоматическое отключение через 10 секунд
         autoStopTimer = game:GetService("RunService").Heartbeat:Connect(function()
-            wait(10) -- Ждем 10 секунд
+            wait(10)
             
             if isFloating then
                 isFloating = false
@@ -245,10 +343,9 @@ local function updateSkyWalk()
     end
     
     local hrp = player.Character.HumanoidRootPart
-    local position = hrp.Position - Vector3.new(0, 5, 0) -- Блок на 5 единиц ниже игрока
+    local position = hrp.Position - Vector3.new(0, 5, 0)
     
     if not skyWalkPart then
-        -- Создаем блок
         skyWalkPart = Instance.new("Part")
         skyWalkPart.Name = "SkyWalkPlatform"
         skyWalkPart.Size = Vector3.new(10, 1, 10)
@@ -259,7 +356,6 @@ local function updateSkyWalk()
         skyWalkPart.Parent = workspace
     end
     
-    -- Обновляем позицию блока
     skyWalkPart.Position = position
 end
 
@@ -270,7 +366,6 @@ local function toggleSkyWalk()
         button5.Text = "SkyWalk: ON"
         button5.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
         
-        -- Создаем соединение для обновления позиции блока
         if skyWalkConnection then
             skyWalkConnection:Disconnect()
         end
@@ -294,75 +389,193 @@ local function toggleSkyWalk()
     end
 end
 
--- Функционал кнопок
--- Кнопка 1: 3 floor steal (бесконечный полет)
-button1.MouseButton1Click:Connect(function()
-    local character = player.Character
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        local hrp = character.HumanoidRootPart
-        
-        isFlying = not isFlying
-        
-        if isFlying then
-            -- Сохраняем текущую позицию для начала полета
-            local startPosition = hrp.Position
-            
-            -- Делаем все объекты полупрозрачными
-            for _, obj in pairs(workspace:GetDescendants()) do
-                if obj:IsA("BasePart") and obj ~= hrp then
-                    obj.LocalTransparencyModifier = 0.5
-                end
+-- Функционал ServerHop
+local function serverHop()
+    button6.Text = "JOINING..."
+    button6.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    
+    local settings = {
+        espEnabled = espEnabled,
+        skyWalkEnabled = skyWalkEnabled,
+        brainrotEspEnabled = brainrotEspEnabled,
+        godModeEnabled = godModeEnabled
+    }
+    
+    local jsonSettings = HttpService:JSONEncode(settings)
+    
+    if not player:FindFirstChild("PalmaHUBSettings") then
+        local folder = Instance.new("Folder")
+        folder.Name = "PalmaHUBSettings"
+        folder.Parent = player
+    end
+    
+    local value = Instance.new("StringValue")
+    value.Name = "Settings"
+    value.Value = jsonSettings
+    value.Parent = player.PalmaHUBSettings
+    
+    local gameId = game.PlaceId
+    local servers = {}
+    
+    local success, result = pcall(function()
+        return game:GetService("HttpService"):JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. gameId .. "/servers/Public?sortOrder=Asc&limit=100"))
+    end)
+    
+    if success and result and result.data then
+        for _, server in ipairs(result.data) do
+            if server.playing < server.maxPlayers and server.id ~= game.JobId then
+                table.insert(servers, server.id)
             end
-            
-            -- Запускаем бесконечный полет
-            flightConnection = RunService.Heartbeat:Connect(function()
-                if isFlying and character and hrp then
-                    -- Постоянно поднимаем игрока вверх
-                    hrp.Velocity = Vector3.new(0, 100, 0)
-                else
-                    -- Останавливаем полет если соединение активно
-                    if flightConnection then
-                        flightConnection:Disconnect()
-                        flightConnection = nil
-                    end
-                end
+        end
+        
+        if #servers > 0 then
+            local randomServer = servers[math.random(1, #servers)]
+            TeleportService:TeleportToPlaceInstance(gameId, randomServer, player)
+        else
+            TeleportService:Teleport(gameId, player)
+        end
+    else
+        TeleportService:Teleport(gameId, player)
+    end
+end
+
+-- Функция для автоматической загрузки настроек после телепортации
+local function loadSettingsAfterTeleport()
+    if player:FindFirstChild("PalmaHUBSettings") then
+        local settingsValue = player.PalmaHUBSettings:FindFirstChild("Settings")
+        if settingsValue then
+            local success, settings = pcall(function()
+                return HttpService:JSONDecode(settingsValue.Value)
             end)
             
-            button1.Text = "Stop flight"
-            
-        else
-            -- Останавливаем полет
-            if flightConnection then
-                flightConnection:Disconnect()
-                flightConnection = nil
-            end
-            
-            -- Возвращаем прозрачность
-            for _, obj in pairs(workspace:GetDescendants()) do
-                if obj:IsA("BasePart") then
-                    obj.LocalTransparencyModifier = 0
+            if success and settings then
+                -- Восстанавливаем настройки ESP
+                if settings.espEnabled then
+                    toggleESP(true)
                 end
+                
+                -- Восстанавливаем настройки SkyWalk
+                if settings.skyWalkEnabled then
+                    toggleSkyWalk()
+                end
+                
+                -- Восстанавливаем настройки BrainrotESP
+                if settings.brainrotEspEnabled then
+                    toggleBrainrotEsp(true)
+                end
+                
+                -- Восстанавливаем настройки GodMode
+                if settings.godModeEnabled then
+                    toggleGodMode()
+                end
+                
+                settingsValue:Destroy()
             end
-            
-            button1.Text = "3 floor steal"
         end
     end
+end
+
+-- Запускаем загрузку настроек при загрузке персонажа
+player.CharacterAdded:Connect(function(character)
+    wait(2)
+    loadSettingsAfterTeleport()
 end)
 
--- Кнопка 2: ESP
+-- Улучшенный ESP с линиями и именами
 local espEnabled = false
 local espObjects = {}
+local espLines = {}
+local nameLabels = {}
+local espUpdateConnection = nil
 
-button2.MouseButton1Click:Connect(function()
-    espEnabled = not espEnabled
+local function createESPLine(toCharacter)
+    local line = Drawing.new("Line")
+    line.Thickness = 2
+    line.Color = Color3.fromRGB(255, 0, 0)
+    line.Visible = false
+    return line
+end
+
+local function createNameLabel(toCharacter)
+    local label = Drawing.new("Text")
+    label.Text = toCharacter.Name
+    label.Size = 18
+    label.Color = Color3.fromRGB(255, 255, 255)
+    label.Outline = true
+    label.OutlineColor = Color3.fromRGB(0, 0, 0)
+    label.Visible = false
+    return label
+end
+
+local function updateESP()
+    if not espEnabled then return end
+    
+    local camera = workspace.CurrentCamera
+    if not camera then return end
+    
+    local screenCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    
+    for _, otherPlayer in pairs(Players:GetPlayers()) do
+        if otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = otherPlayer.Character.HumanoidRootPart
+            local head = otherPlayer.Character:FindFirstChild("Head")
+            
+            if hrp then
+                local position, visible = camera:WorldToViewportPoint(hrp.Position)
+                
+                if visible then
+                    if not espLines[otherPlayer] then
+                        espLines[otherPlayer] = createESPLine(otherPlayer.Character)
+                    end
+                    
+                    local line = espLines[otherPlayer]
+                    line.From = screenCenter
+                    line.To = Vector2.new(position.X, position.Y)
+                    line.Visible = true
+                    
+                    if not nameLabels[otherPlayer] then
+                        nameLabels[otherPlayer] = createNameLabel(otherPlayer.Character)
+                    end
+                    
+                    local label = nameLabels[otherPlayer]
+                    label.Position = Vector2.new(position.X, position.Y - 30)
+                    label.Visible = true
+                    label.Text = otherPlayer.Name .. " (" .. math.floor((hrp.Position - camera.CFrame.Position).Magnitude) .. " studs)"
+                else
+                    if espLines[otherPlayer] then
+                        espLines[otherPlayer].Visible = false
+                    end
+                    if nameLabels[otherPlayer] then
+                        nameLabels[otherPlayer].Visible = false
+                    end
+                end
+            end
+        else
+            if espLines[otherPlayer] then
+                espLines[otherPlayer]:Remove()
+                espLines[otherPlayer] = nil
+            end
+            if nameLabels[otherPlayer] then
+                nameLabels[otherPlayer]:Remove()
+                nameLabels[otherPlayer] = nil
+            end
+        end
+    end
+end
+
+local function toggleESP(forceState)
+    if forceState ~= nil then
+        espEnabled = forceState
+    else
+        espEnabled = not espEnabled
+    end
     
     if espEnabled then
-        -- Включаем ESP
         for _, otherPlayer in pairs(Players:GetPlayers()) do
-            if otherPlayer ~= player and otherPlayer.Character then
+            if otherPlayer.Character then
                 local highlight = Instance.new("Highlight")
                 highlight.Name = "PalmaESP"
-                highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                highlight.FillColor = otherPlayer == player and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
                 highlight.FillTransparency = 0.5
                 highlight.Parent = otherPlayer.Character
@@ -370,14 +583,17 @@ button2.MouseButton1Click:Connect(function()
             end
         end
         
-        -- Обработка новых игроков
+        if not espUpdateConnection then
+            espUpdateConnection = RunService.RenderStepped:Connect(updateESP)
+        end
+        
         Players.PlayerAdded:Connect(function(newPlayer)
             if espEnabled then
                 newPlayer.CharacterAdded:Connect(function(character)
                     if espEnabled then
                         local highlight = Instance.new("Highlight")
                         highlight.Name = "PalmaESP"
-                        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                        highlight.FillColor = newPlayer == player and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                         highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
                         highlight.FillTransparency = 0.5
                         highlight.Parent = character
@@ -390,18 +606,108 @@ button2.MouseButton1Click:Connect(function()
         button2.Text = "ESP: ON"
         button2.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
     else
-        -- Выключаем ESP
         for _, highlight in pairs(espObjects) do
             highlight:Destroy()
         end
         espObjects = {}
         
+        for _, line in pairs(espLines) do
+            line:Remove()
+        end
+        espLines = {}
+        
+        for _, label in pairs(nameLabels) do
+            label:Remove()
+        end
+        nameLabels = {}
+        
+        if espUpdateConnection then
+            espUpdateConnection:Disconnect()
+            espUpdateConnection = nil
+        end
+        
         button2.Text = "esp"
         button2.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     end
+end
+
+-- BrainrotESP функционал - делает все объекты полупрозрачными
+local brainrotEspEnabled = false
+local brainrotEspConnection = nil
+local originalTransparency = {}
+local brainrotEspObjects = {}
+
+local function toggleBrainrotEsp(forceState)
+    if forceState ~= nil then
+        brainrotEspEnabled = forceState
+    else
+        brainrotEspEnabled = not brainrotEspEnabled
+    end
+    
+    if brainrotEspEnabled then
+        button1.Text = "BrainrotEsp: ON"
+        button1.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        
+        -- Делаем все объекты в workspace полупрозрачными
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and not obj:IsA("Terrain") then
+                -- Сохраняем оригинальную прозрачность
+                originalTransparency[obj] = obj.Transparency
+                
+                -- Устанавливаем полупрозрачность
+                obj.Transparency = 0.7
+                
+                -- Сохраняем объект для последующего восстановления
+                table.insert(brainrotEspObjects, obj)
+            end
+        end
+        
+        -- Обрабатываем новые объекты
+        if brainrotEspConnection then
+            brainrotEspConnection:Disconnect()
+        end
+        
+        brainrotEspConnection = workspace.DescendantAdded:Connect(function(obj)
+            if brainrotEspEnabled and obj:IsA("BasePart") and not obj:IsA("Terrain") then
+                originalTransparency[obj] = obj.Transparency
+                obj.Transparency = 0.7
+                table.insert(brainrotEspObjects, obj)
+            end
+        end)
+    else
+        button1.Text = "BrainrotEsp"
+        button1.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        
+        -- Восстанавливаем оригинальную прозрачность всех объектов
+        for _, obj in pairs(brainrotEspObjects) do
+            if obj and obj.Parent then
+                local original = originalTransparency[obj]
+                if original then
+                    obj.Transparency = original
+                end
+            end
+        end
+        
+        -- Очищаем таблицы
+        brainrotEspObjects = {}
+        originalTransparency = {}
+        
+        if brainrotEspConnection then
+            brainrotEspConnection:Disconnect()
+            brainrotEspConnection = nil
+        end
+    end
+end
+
+-- Функционал кнопок
+button1.MouseButton1Click:Connect(function()
+    toggleBrainrotEsp()
 end)
 
--- Кнопка 3: Float
+button2.MouseButton1Click:Connect(function()
+    toggleESP()
+end)
+
 button3.MouseButton1Click:Connect(function()
     if isFloating then
         stopFloating()
@@ -410,36 +716,38 @@ button3.MouseButton1Click:Connect(function()
     end
 end)
 
--- Кнопка 4: STEALER++
 button4.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://pastefy.app/CLu1GH4y/raw'))()
 end)
 
--- Кнопка 5: SkyWalk
 button5.MouseButton1Click:Connect(function()
     toggleSkyWalk()
+end)
+
+button6.MouseButton1Click:Connect(serverHop)
+
+button7.MouseButton1Click:Connect(function()
+    toggleGodMode()
 end)
 
 -- Добавляем основной фрейм на экран
 mainFrame.Parent = screenGui
 toggleButton.Parent = screenGui
+versionText.Parent = screenGui
 
 -- Функция переключения видимости интерфейса
 local function toggleInterface()
     if mainFrame.Visible then
-        -- Закрываем интерфейс
         mainFrame.Visible = false
         toggleButton.Text = "Open"
     else
-        -- Открываем интерфейс
         mainFrame.Visible = true
         toggleButton.Text = "Close"
         
-        -- Анимация появления
         mainFrame.Size = UDim2.new(0, 0, 0, 0)
         
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 350)})
+        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 450)})
         tween:Play()
     end
 end
@@ -453,3 +761,7 @@ player.CharacterAdded:Connect(function(character)
         stopFloating()
     end)
 end)
+
+-- Автоматическая загрузка настроек при запуске
+wait(2)
+loadSettingsAfterTeleport()
