@@ -15,7 +15,7 @@ versionText.Size = UDim2.new(0, 200, 0, 20)
 versionText.Position = UDim2.new(1, -210, 1, -30)
 versionText.AnchorPoint = Vector2.new(0, 1)
 versionText.BackgroundTransparency = 1
-versionText.Text = "TikTok @palmastealscript V 1.1"
+versionText.Text = "TikTok @palmastealscript V 1.2"
 versionText.TextColor3 = Color3.new(1, 1, 1)
 versionText.Font = Enum.Font.Code
 versionText.TextSize = 14
@@ -49,34 +49,46 @@ screenGui.Name = "PalmaHUB"
 screenGui.Parent = player.PlayerGui
 screenGui.ResetOnSpawn = false
 
--- Основной фрейм
+-- Основной фрейм (первая страница)
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 550) -- Увеличил высоту для новой кнопки
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -275)
+mainFrame.Size = UDim2.new(0, 300, 0, 500)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
 mainFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
 mainFrame.Visible = false
 
+-- Вторая страница
+local secondFrame = Instance.new("Frame")
+secondFrame.Name = "SecondFrame"
+secondFrame.Size = UDim2.new(0, 300, 0, 500)
+secondFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+secondFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
+secondFrame.BorderSizePixel = 0
+secondFrame.ClipsDescendants = true
+secondFrame.Visible = false
+
 -- Создание скругленных углов
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 12)
 corner.Parent = mainFrame
+corner:Clone().Parent = secondFrame
 
 -- Обводка
 local stroke = Instance.new("UIStroke")
 stroke.Color = Color3.fromRGB(0, 0, 0)
 stroke.Thickness = 2
 stroke.Parent = mainFrame
+stroke:Clone().Parent = secondFrame
 
--- Заголовок
+-- Заголовок для первой страницы
 local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-title.Text = "PalmaHUB"
+title.Text = "PalmaHUB - Page 1"
 title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.Code
 title.TextSize = 20
@@ -87,7 +99,12 @@ titleCorner.CornerRadius = UDim.new(0, 12)
 titleCorner.Parent = title
 title.Parent = mainFrame
 
--- Контейнер для кнопок
+-- Заголовок для второй страницы
+local secondTitle = title:Clone()
+secondTitle.Text = "PalmaHUB - Page 2"
+secondTitle.Parent = secondFrame
+
+-- Контейнер для кнопок первой страницы
 local buttonsContainer = Instance.new("Frame")
 buttonsContainer.Name = "ButtonsContainer"
 buttonsContainer.Size = UDim2.new(1, -20, 1, -60)
@@ -95,8 +112,12 @@ buttonsContainer.Position = UDim2.new(0, 10, 0, 50)
 buttonsContainer.BackgroundTransparency = 1
 buttonsContainer.Parent = mainFrame
 
+-- Контейнер для кнопок второй страницы
+local secondButtonsContainer = buttonsContainer:Clone()
+secondButtonsContainer.Parent = secondFrame
+
 -- Функция для создания кнопок
-local function createButton(name, text, position)
+local function createButton(name, text, position, parent)
     local button = Instance.new("TextButton")
     button.Name = name
     button.Size = UDim2.new(1, 0, 0, 40)
@@ -117,56 +138,66 @@ local function createButton(name, text, position)
     buttonStroke.Thickness = 1
     buttonStroke.Parent = button
     
-    button.Parent = buttonsContainer
+    button.Parent = parent
     
     return button
 end
 
--- Создание кнопок
-local button1 = createButton("BrainrotEspButton", "BrainrotEsp", UDim2.new(0, 0, 0, 0))
-local button2 = createButton("ESPButton", "esp", UDim2.new(0, 0, 0, 50))
-local button3 = createButton("FloatButton", "float", UDim2.new(0, 0, 0, 100))
-local button4 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0, 150))
-local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200))
-local button6 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 250))
-local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300))
-local button8 = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 350))
-local button9 = createButton("PalmaFuckerButton", "Palma F@CK3R", UDim2.new(0, 0, 0, 400)) -- Новая кнопка Palma F@CK3R
+-- Создание кнопок первой страницы
+local button1 = createButton("BrainrotEspButton", "BrainrotEsp", UDim2.new(0, 0, 0, 0), buttonsContainer)
+local button2 = createButton("ESPButton", "esp", UDim2.new(0, 0, 0, 50), buttonsContainer)
+local button3 = createButton("FloatButton", "float", UDim2.new(0, 0, 0, 100), buttonsContainer)
+local button4 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0, 150), buttonsContainer)
+local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200), buttonsContainer)
+local button6 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 250), buttonsContainer)
+local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300), buttonsContainer)
+local nextPageButton = createButton("NextPageButton", "Next Page", UDim2.new(0, 0, 0, 350), buttonsContainer)
+
+-- Создание кнопок второй страницы
+local backPageButton = createButton("BackPageButton", "Back", UDim2.new(0, 0, 0, 0), secondButtonsContainer)
+local kickButton = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 50), secondButtonsContainer)
+local palmaFuckerButton = createButton("PalmaFuckerButton", "Palma F@CK3R", UDim2.new(0, 0, 0, 100), secondButtonsContainer)
+local walkerButton = createButton("WalkerButton", "Walker", UDim2.new(0, 0, 0, 150), secondButtonsContainer)
 
 -- Функционал перетаскивания
-local dragging = false
-local dragInput, dragStart, startPos
+local function setupDragging(frame)
+    local dragging = false
+    local dragInput, dragStart, startPos
 
-local function update(input)
-    local delta = input.Position - dragStart
-    mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    local function update(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
 end
 
-mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
-        
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-mainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
-end)
+setupDragging(mainFrame)
+setupDragging(secondFrame)
 
 -- Функционал GodMode (бессмертие)
 local godModeEnabled = false
@@ -703,8 +734,8 @@ end
 
 -- Функционал кнопки Kick
 local function kickPlayer()
-    button8.Text = "KICKING..."
-    button8.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    kickButton.Text = "KICKING..."
+    kickButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     
     -- Создаем сообщение о кике
     local kickMessage = Instance.new("Message")
@@ -723,8 +754,8 @@ end
 
 -- Функционал кнопки Palma F@CK3R
 local function runPalmaFucker()
-    button9.Text = "LOADING..."
-    button9.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    palmaFuckerButton.Text = "LOADING..."
+    palmaFuckerButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
     
     -- Запускаем внешний скрипт
     local success, errorMessage = pcall(function()
@@ -732,20 +763,134 @@ local function runPalmaFucker()
     end)
     
     if success then
-        button9.Text = "LOADED!"
+        palmaFuckerButton.Text = "LOADED!"
         wait(2)
-        button9.Text = "Palma F@CK3R"
-        button9.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        palmaFuckerButton.Text = "Palma F@CK3R"
+        palmaFuckerButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     else
-        button9.Text = "ERROR!"
+        palmaFuckerButton.Text = "ERROR!"
         warn("Failed to load Palma F@CK3R script: " .. errorMessage)
         wait(2)
-        button9.Text = "Palma F@CK3R"
-        button9.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        palmaFuckerButton.Text = "Palma F@CK3R"
+        palmaFuckerButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     end
 end
 
--- Функционал кнопок
+-- Функционал Walker (ходит по небу)
+local walkerEnabled = false
+local walkerConnection = nil
+local walkerPlatform = nil
+
+local function toggleWalker()
+    walkerEnabled = not walkerEnabled
+    
+    if walkerEnabled then
+        walkerButton.Text = "WALKER: ON"
+        walkerButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        
+        -- Создаем платформу под ногами
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = player.Character.HumanoidRootPart
+            
+            if not walkerPlatform then
+                walkerPlatform = Instance.new("Part")
+                walkerPlatform.Name = "WalkerPlatform"
+                walkerPlatform.Size = Vector3.new(20, 1, 20)
+                walkerPlatform.Anchored = true
+                walkerPlatform.CanCollide = true
+                walkerPlatform.Transparency = 0.8
+                walkerPlatform.Color = Color3.fromRGB(200, 200, 200)
+                walkerPlatform.Parent = workspace
+            end
+            
+            -- Обновляем позицию платформы
+            if walkerConnection then
+                walkerConnection:Disconnect()
+            end
+            
+            walkerConnection = RunService.Heartbeat:Connect(function()
+                if not walkerEnabled or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+                    if walkerConnection then
+                        walkerConnection:Disconnect()
+                    end
+                    if walkerPlatform then
+                        walkerPlatform:Destroy()
+                        walkerPlatform = nil
+                    end
+                    return
+                end
+                
+                local hrp = player.Character.HumanoidRootPart
+                local position = hrp.Position - Vector3.new(0, 3, 0)
+                walkerPlatform.Position = position
+            end)
+        end
+        
+        -- Обрабатываем появление нового персонажа
+        player.CharacterAdded:Connect(function(character)
+            wait(0.5) -- Ждем загрузки персонажа
+            if walkerEnabled then
+                if not walkerPlatform then
+                    walkerPlatform = Instance.new("Part")
+                    walkerPlatform.Name = "WalkerPlatform"
+                    walkerPlatform.Size = Vector3.new(20, 1, 20)
+                    walkerPlatform.Anchored = true
+                    walkerPlatform.CanCollide = true
+                    walkerPlatform.Transparency = 0.8
+                    walkerPlatform.Color = Color3.fromRGB(200, 200, 200)
+                    walkerPlatform.Parent = workspace
+                end
+                
+                if walkerConnection then
+                    walkerConnection:Disconnect()
+                end
+                
+                walkerConnection = RunService.Heartbeat:Connect(function()
+                    if not walkerEnabled or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+                        if walkerConnection then
+                            walkerConnection:Disconnect()
+                        end
+                        if walkerPlatform then
+                            walkerPlatform:Destroy()
+                            walkerPlatform = nil
+                        end
+                        return
+                    end
+                    
+                    local hrp = player.Character.HumanoidRootPart
+                    local position = hrp.Position - Vector3.new(0, 3, 0)
+                    walkerPlatform.Position = position
+                end)
+            end
+        end)
+    else
+        walkerButton.Text = "Walker"
+        walkerButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        
+        if walkerConnection then
+            walkerConnection:Disconnect()
+            walkerConnection = nil
+        end
+        
+        if walkerPlatform then
+            walkerPlatform:Destroy()
+            walkerPlatform = nil
+        end
+    end
+end
+
+-- Функционал переключения страниц
+local function goToSecondPage()
+    mainFrame.Visible = false
+    secondFrame.Visible = true
+end
+
+local function goToFirstPage()
+    secondFrame.Visible = false
+    mainFrame.Visible = true
+end
+
+-- Функционал кнопок первой страницы
 button1.MouseButton1Click:Connect(function()
     toggleBrainrotEsp()
 end)
@@ -776,23 +921,25 @@ button7.MouseButton1Click:Connect(function()
     toggleGodMode()
 end)
 
-button8.MouseButton1Click:Connect(function()
-    kickPlayer()
-end)
+nextPageButton.MouseButton1Click:Connect(goToSecondPage)
 
-button9.MouseButton1Click:Connect(function()
-    runPalmaFucker()
-end)
+-- Функционал кнопок второй страницы
+backPageButton.MouseButton1Click:Connect(goToFirstPage)
+kickButton.MouseButton1Click:Connect(kickPlayer)
+palmaFuckerButton.MouseButton1Click:Connect(runPalmaFucker)
+walkerButton.MouseButton1Click:Connect(toggleWalker)
 
--- Добавляем основной фрейм на экран
+-- Добавляем фреймы на экран
 mainFrame.Parent = screenGui
+secondFrame.Parent = screenGui
 toggleButton.Parent = screenGui
 versionText.Parent = screenGui
 
 -- Функция переключения видимости интерфейса
 local function toggleInterface()
-    if mainFrame.Visible then
+    if mainFrame.Visible or secondFrame.Visible then
         mainFrame.Visible = false
+        secondFrame.Visible = false
         toggleButton.Text = "Open"
     else
         mainFrame.Visible = true
@@ -801,7 +948,7 @@ local function toggleInterface()
         mainFrame.Size = UDim2.new(0, 0, 0, 0)
         
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 550)})
+        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 500)})
         tween:Play()
     end
 end
