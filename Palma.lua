@@ -8,29 +8,33 @@ local HttpService = game:GetService("HttpService")
 local player = Players.LocalPlayer
 local mouse = player:GetMouse()
 
+-- Определяем платформу
+local isMobile = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
+local uiScale = isMobile and 0.7 or 1  -- Масштаб для мобильных устройств
+
 -- Создание текста версии в правом углу
 local versionText = Instance.new("TextLabel")
 versionText.Name = "VersionText"
-versionText.Size = UDim2.new(0, 200, 0, 20)
-versionText.Position = UDim2.new(1, -210, 1, -30)
+versionText.Size = UDim2.new(0, 200 * uiScale, 0, 20 * uiScale)
+versionText.Position = UDim2.new(1, -210 * uiScale, 1, -30 * uiScale)
 versionText.AnchorPoint = Vector2.new(0, 1)
 versionText.BackgroundTransparency = 1
 versionText.Text = "TikTok @palmastealscript V 1.2"
 versionText.TextColor3 = Color3.new(1, 1, 1)
 versionText.Font = Enum.Font.Code
-versionText.TextSize = 14
+versionText.TextSize = 14 * uiScale
 versionText.TextXAlignment = Enum.TextXAlignment.Right
 
 -- Создание кнопки открытия/закрытия
 local toggleButton = Instance.new("TextButton")
 toggleButton.Name = "ToggleButton"
-toggleButton.Size = UDim2.new(0, 100, 0, 30)
-toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.Size = UDim2.new(0, 100 * uiScale, 0, 30 * uiScale)
+toggleButton.Position = UDim2.new(0, 10 * uiScale, 0, 10 * uiScale)
 toggleButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
 toggleButton.Text = "Open"
 toggleButton.TextColor3 = Color3.new(1, 1, 1)
 toggleButton.Font = Enum.Font.Code
-toggleButton.TextSize = 14
+toggleButton.TextSize = 14 * uiScale
 toggleButton.BorderSizePixel = 0
 toggleButton.ZIndex = 10
 
@@ -52,8 +56,8 @@ screenGui.ResetOnSpawn = false
 -- Основной фрейм (первая страница)
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 300, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+mainFrame.Size = UDim2.new(0, 300 * uiScale, 0, 500 * uiScale)
+mainFrame.Position = UDim2.new(0.5, -150 * uiScale, 0.5, -250 * uiScale)
 mainFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
@@ -62,8 +66,8 @@ mainFrame.Visible = false
 -- Вторая страница
 local secondFrame = Instance.new("Frame")
 secondFrame.Name = "SecondFrame"
-secondFrame.Size = UDim2.new(0, 300, 0, 500)
-secondFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
+secondFrame.Size = UDim2.new(0, 300 * uiScale, 0, 500 * uiScale)
+secondFrame.Position = UDim2.new(0.5, -150 * uiScale, 0.5, -250 * uiScale)
 secondFrame.BackgroundColor3 = Color3.fromRGB(144, 238, 144)
 secondFrame.BorderSizePixel = 0
 secondFrame.ClipsDescendants = true
@@ -85,13 +89,13 @@ stroke:Clone().Parent = secondFrame
 -- Заголовок для первой страницы
 local title = Instance.new("TextLabel")
 title.Name = "Title"
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, 0, 0, 40 * uiScale)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
 title.Text = "PalmaHUB - Page 1"
 title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.Code
-title.TextSize = 20
+title.TextSize = 20 * uiScale
 title.BorderSizePixel = 0
 
 local titleCorner = Instance.new("UICorner")
@@ -107,8 +111,8 @@ secondTitle.Parent = secondFrame
 -- Контейнер для кнопок первой страницы
 local buttonsContainer = Instance.new("Frame")
 buttonsContainer.Name = "ButtonsContainer"
-buttonsContainer.Size = UDim2.new(1, -20, 1, -60)
-buttonsContainer.Position = UDim2.new(0, 10, 0, 50)
+buttonsContainer.Size = UDim2.new(1, -20 * uiScale, 1, -60 * uiScale)
+buttonsContainer.Position = UDim2.new(0, 10 * uiScale, 0, 50 * uiScale)
 buttonsContainer.BackgroundTransparency = 1
 buttonsContainer.Parent = mainFrame
 
@@ -120,13 +124,13 @@ secondButtonsContainer.Parent = secondFrame
 local function createButton(name, text, position, parent)
     local button = Instance.new("TextButton")
     button.Name = name
-    button.Size = UDim2.new(1, 0, 0, 40)
+    button.Size = UDim2.new(1, 0, 0, 40 * uiScale)
     button.Position = position
     button.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     button.Text = text
     button.TextColor3 = Color3.new(1, 1, 1)
     button.Font = Enum.Font.Code
-    button.TextSize = 16
+    button.TextSize = 16 * uiScale
     button.BorderSizePixel = 0
     
     local buttonCorner = Instance.new("UICorner")
@@ -144,20 +148,19 @@ local function createButton(name, text, position, parent)
 end
 
 -- Создание кнопок первой страницы
-local button1 = createButton("BrainrotEspButton", "BrainrotEsp", UDim2.new(0, 0, 0, 0), buttonsContainer)
-local button2 = createButton("ESPButton", "esp", UDim2.new(0, 0, 0, 50), buttonsContainer)
-local button3 = createButton("FloatButton", "float", UDim2.new(0, 0, 0, 100), buttonsContainer)
-local button4 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0, 150), buttonsContainer)
-local button5 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 200), buttonsContainer)
-local button6 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 250), buttonsContainer)
-local button7 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 300), buttonsContainer)
-local nextPageButton = createButton("NextPageButton", "Next Page", UDim2.new(0, 0, 0, 350), buttonsContainer)
+local button1 = createButton("ESPButton", "esp", UDim2.new(0, 0, 0, 0), buttonsContainer)
+local button2 = createButton("StealerPlusButton", "STEALER++", UDim2.new(0, 0, 0, 50 * uiScale), buttonsContainer)
+local button3 = createButton("SkyWalkButton", "SkyWalk", UDim2.new(0, 0, 0, 100 * uiScale), buttonsContainer)
+local button4 = createButton("ServerHopButton", "ServerHop", UDim2.new(0, 0, 0, 150 * uiScale), buttonsContainer)
+local button5 = createButton("GodModeButton", "GodMode", UDim2.new(0, 0, 0, 200 * uiScale), buttonsContainer)
+local button6 = createButton("LennonHubButton", "Lennon Hub v5", UDim2.new(0, 0, 0, 250 * uiScale), buttonsContainer)
+local nextPageButton = createButton("NextPageButton", "Next Page", UDim2.new(0, 0, 0, 300 * uiScale), buttonsContainer)
 
 -- Создание кнопок второй страницы
 local backPageButton = createButton("BackPageButton", "Back", UDim2.new(0, 0, 0, 0), secondButtonsContainer)
-local kickButton = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 50), secondButtonsContainer)
-local palmaFuckerButton = createButton("PalmaFuckerButton", "Palma F@CK3R", UDim2.new(0, 0, 0, 100), secondButtonsContainer)
-local walkerButton = createButton("WalkerButton", "Walker", UDim2.new(0, 0, 0, 150), secondButtonsContainer)
+local kickButton = createButton("KickButton", "Kick", UDim2.new(0, 0, 0, 50 * uiScale), secondButtonsContainer)
+local palmaFuckerButton = createButton("PalmaFuckerButton", "Palma F@CK3R", UDim2.new(0, 0, 0, 100 * uiScale), secondButtonsContainer)
+local walkerButton = createButton("WalkerButton", "Walker", UDim2.new(0, 0, 0, 150 * uiScale), secondButtonsContainer)
 
 -- Функционал перетаскивания
 local function setupDragging(frame)
@@ -207,8 +210,8 @@ local function toggleGodMode()
     godModeEnabled = not godModeEnabled
     
     if godModeEnabled then
-        button7.Text = "GODMODE: ON"
-        button7.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        button5.Text = "GODMODE: ON"
+        button5.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
         
         -- Защита от смерти
         if player.Character then
@@ -270,8 +273,8 @@ local function toggleGodMode()
         table.insert(godModeConnections, characterAddedConnection)
         
     else
-        button7.Text = "GodMode"
-        button7.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        button5.Text = "GodMode"
+        button5.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
         
         -- Отключаем все соединения GodMode
         for _, connection in ipairs(godModeConnections) do
@@ -287,77 +290,6 @@ local function toggleGodMode()
                 humanoid.Health = 100
             end
         end
-    end
-end
-
--- Функционал плавания
-local isFloating = false
-local floatConnection = nil
-local autoStopTimer = nil
-
-local function startFloating()
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local humanoidRootPart = player.Character.HumanoidRootPart
-        
-        if floatConnection then
-            floatConnection:Disconnect()
-        end
-        
-        if autoStopTimer then
-            autoStopTimer:Disconnect()
-        end
-        
-        isFloating = true
-        button3.Text = "FLOATING..."
-        button3.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
-        
-        floatConnection = RunService.Heartbeat:Connect(function()
-            if not isFloating or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
-                if floatConnection then
-                    floatConnection:Disconnect()
-                end
-                return
-            end
-            
-            local camera = workspace.CurrentCamera
-            local cameraCFrame = camera.CFrame
-            local direction = cameraCFrame.LookVector
-            
-            humanoidRootPart.Velocity = direction * 25
-        end)
-        
-        autoStopTimer = game:GetService("RunService").Heartbeat:Connect(function()
-            wait(10)
-            
-            if isFloating then
-                isFloating = false
-                if floatConnection then
-                    floatConnection:Disconnect()
-                    floatConnection = nil
-                end
-                button3.Text = "float"
-                button3.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-            end
-            
-            autoStopTimer:Disconnect()
-            autoStopTimer = nil
-        end)
-    end
-end
-
-local function stopFloating()
-    isFloating = false
-    button3.Text = "float"
-    button3.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-    
-    if floatConnection then
-        floatConnection:Disconnect()
-        floatConnection = nil
-    end
-    
-    if autoStopTimer then
-        autoStopTimer:Disconnect()
-        autoStopTimer = nil
     end
 end
 
@@ -396,8 +328,8 @@ local function toggleSkyWalk()
     skyWalkEnabled = not skyWalkEnabled
     
     if skyWalkEnabled then
-        button5.Text = "SkyWalk: ON"
-        button5.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        button3.Text = "SkyWalk: ON"
+        button3.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
         
         if skyWalkConnection then
             skyWalkConnection:Disconnect()
@@ -407,8 +339,8 @@ local function toggleSkyWalk()
             updateSkyWalk()
         end)
     else
-        button5.Text = "SkyWalk"
-        button5.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        button3.Text = "SkyWalk"
+        button3.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
         
         if skyWalkConnection then
             skyWalkConnection:Disconnect()
@@ -424,13 +356,12 @@ end
 
 -- Функционал ServerHop
 local function serverHop()
-    button6.Text = "JOINING..."
-    button6.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    button4.Text = "JOINING..."
+    button4.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
     
     local settings = {
         espEnabled = espEnabled,
         skyWalkEnabled = skyWalkEnabled,
-        brainrotEspEnabled = brainrotEspEnabled,
         godModeEnabled = godModeEnabled
     }
     
@@ -490,11 +421,6 @@ local function loadSettingsAfterTeleport()
                 -- Восстанавливаем настройки SkyWalk
                 if settings.skyWalkEnabled then
                     toggleSkyWalk()
-                end
-                
-                -- Восстанавливаем настройки BrainrotESP
-                if settings.brainrotEspEnabled then
-                    toggleBrainrotEsp(true)
                 end
                 
                 -- Восстанавливаем настройки GodMode
@@ -636,8 +562,8 @@ local function toggleESP(forceState)
             end
         end)
         
-        button2.Text = "ESP: ON"
-        button2.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        button1.Text = "ESP: ON"
+        button1.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
     else
         for _, highlight in pairs(espObjects) do
             highlight:Destroy()
@@ -659,76 +585,8 @@ local function toggleESP(forceState)
             espUpdateConnection = nil
         end
         
-        button2.Text = "esp"
-        button2.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-    end
-end
-
--- BrainrotESP функционал - делает все объекты полупрозрачными
-local brainrotEspEnabled = false
-local brainrotEspConnection = nil
-local originalTransparency = {}
-local brainrotEspObjects = {}
-
-local function toggleBrainrotEsp(forceState)
-    if forceState ~= nil then
-        brainrotEspEnabled = forceState
-    else
-        brainrotEspEnabled = not brainrotEspEnabled
-    end
-    
-    if brainrotEspEnabled then
-        button1.Text = "BrainrotEsp: ON"
-        button1.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
-        
-        -- Делаем все объекты в workspace полупрозрачными
-        for _, obj in pairs(workspace:GetDescendants()) do
-            if obj:IsA("BasePart") and not obj:IsA("Terrain") then
-                -- Сохраняем оригинальную прозрачность
-                originalTransparency[obj] = obj.Transparency
-                
-                -- Устанавливаем полупрозрачность
-                obj.Transparency = 0.7
-                
-                -- Сохраняем объект для последуючного восстановления
-                table.insert(brainrotEspObjects, obj)
-            end
-        end
-        
-        -- Обрабатываем новые объекты
-        if brainrotEspConnection then
-            brainrotEspConnection:Disconnect()
-        end
-        
-        brainrotEspConnection = workspace.DescendantAdded:Connect(function(obj)
-            if brainrotEspEnabled and obj:IsA("BasePart") and not obj:IsA("Terrain") then
-                originalTransparency[obj] = obj.Transparency
-                obj.Transparency = 0.7
-                table.insert(brainrotEspObjects, obj)
-            end
-        end)
-    else
-        button1.Text = "BrainrotEsp"
+        button1.Text = "esp"
         button1.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-        
-        -- Восстанавливаем оригинальную прозрачность всех объектов
-        for _, obj in pairs(brainrotEspObjects) do
-            if obj and obj.Parent then
-                local original = originalTransparency[obj]
-                if original then
-                    obj.Transparency = original
-                end
-            end
-        end
-        
-        -- Очищаем таблицы
-        brainrotEspObjects = {}
-        originalTransparency = {}
-        
-        if brainrotEspConnection then
-            brainrotEspConnection:Disconnect()
-            brainrotEspConnection = nil
-        end
     end
 end
 
@@ -773,6 +631,30 @@ local function runPalmaFucker()
         wait(2)
         palmaFuckerButton.Text = "Palma F@CK3R"
         palmaFuckerButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    end
+end
+
+-- Функционал Lennon Hub v5
+local function runLennonHub()
+    button6.Text = "LOADING..."
+    button6.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    
+    -- Запускаем внешний скрипт
+    local success, errorMessage = pcall(function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Steal-a-Brainrot-Lennon-hub-v5-52358"))()
+    end)
+    
+    if success then
+        button6.Text = "LOADED!"
+        wait(2)
+        button6.Text = "Lennon Hub v5"
+        button6.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    else
+        button6.Text = "ERROR!"
+        warn("Failed to load Lennon Hub v5 script: " .. errorMessage)
+        wait(2)
+        button6.Text = "Lennon Hub v5"
+        button6.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     end
 end
 
@@ -892,34 +774,24 @@ end
 
 -- Функционал кнопок первой страницы
 button1.MouseButton1Click:Connect(function()
-    toggleBrainrotEsp()
-end)
-
-button2.MouseButton1Click:Connect(function()
     toggleESP()
 end)
 
-button3.MouseButton1Click:Connect(function()
-    if isFloating then
-        stopFloating()
-    else
-        startFloating()
-    end
-end)
-
-button4.MouseButton1Click:Connect(function()
+button2.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://pastefy.app/CLu1GH4y/raw'))()
 end)
 
-button5.MouseButton1Click:Connect(function()
+button3.MouseButton1Click:Connect(function()
     toggleSkyWalk()
 end)
 
-button6.MouseButton1Click:Connect(serverHop)
+button4.MouseButton1Click:Connect(serverHop)
 
-button7.MouseButton1Click:Connect(function()
+button5.MouseButton1Click:Connect(function()
     toggleGodMode()
 end)
+
+button6.MouseButton1Click:Connect(runLennonHub)
 
 nextPageButton.MouseButton1Click:Connect(goToSecondPage)
 
@@ -948,20 +820,13 @@ local function toggleInterface()
         mainFrame.Size = UDim2.new(0, 0, 0, 0)
         
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300, 0, 500)})
+        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = UDim2.new(0, 300 * uiScale, 0, 500 * uiScale)})
         tween:Play()
     end
 end
 
 -- Обработка нажатия на кнопку переключения
 toggleButton.MouseButton1Click:Connect(toggleInterface)
-
--- Останавливаем плавание при смерти
-player.CharacterAdded:Connect(function(character)
-    character:WaitForChild("Humanoid").Died:Connect(function()
-        stopFloating()
-    end)
-end)
 
 -- Автоматическая загрузка настроек при запуске
 wait(2)
