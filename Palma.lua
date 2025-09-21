@@ -601,7 +601,7 @@ local function kickPlayer()
     kickMessage.Parent = workspace
     
     -- Ждем немного, чтобы игрок увидел сообщение
-    wait(2)
+    wait(0)
     
     -- Кикаем игрока из игры
     player:Kick("YOU PRESS BUTTON KICK")
@@ -831,3 +831,4 @@ toggleButton.MouseButton1Click:Connect(toggleInterface)
 -- Автоматическая загрузка настроек при запуске
 wait(2)
 loadSettingsAfterTeleport()
+
